@@ -532,7 +532,7 @@ const Invoice = ({
 
             {console.log(InvoiceProducts)}
             <section className='main-dash'>
-                <AdminSidebar />
+                <Sidebar />
 
                 <div className='main'>
                     {/* <DashHeader /> */}

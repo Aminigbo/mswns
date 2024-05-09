@@ -48,14 +48,14 @@ const Sidebar = ({
   return (
     <div className='m-s' style={{
       position: "fixed",
-      zIndex:10000000,
+      zIndex: 10000000,
     }} >
 
-      
+
 
       <div className='media-bar' onClick={handleClick}>
         {open1 ? (<IoCloseSharp id='close' style={{ color: '#05004E' }} />) : (<FaBars id='bar' />)}
-        
+
       </div>
 
 
@@ -138,17 +138,19 @@ const Sidebar = ({
     </NavLink> */}
 
 
-        <NavLink to='/payroll' className='link' activeclassName = 'active'>
-      
-        <div>
-        
-          <IoCardOutline className='icon'/>
-          <h4 style={{display:isOpen ? "none" : "block"}}>Payroll Processing</h4>
+        {/* {User.type == "Payteller" &&
+          <NavLink to='/payroll' className='link' activeclassName='active'>
 
-        </div>
-      
-      </NavLink>
+            <div>
 
+              <IoCardOutline className='icon' />
+              <h4 style={{ display: isOpen ? "none" : "block" }}>Payroll Processing</h4>
+
+            </div>
+
+          </NavLink>
+
+        } */}
 
         {/* <NavLink to='/dashboard' className='link' activeclassName = 'active'>
       
