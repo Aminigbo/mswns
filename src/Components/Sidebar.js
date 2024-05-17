@@ -114,16 +114,7 @@ const Sidebar = ({
           </NavLink>
         }
 
-        {/* <NavLink to='/dashboard' className='link' activeclassName = 'active'>
-      
-        <div>
-        
-          <PiUsersThreeBold className='icon'/>
-          <h4 style={{display:isOpen ? "none" : "block"}}>Staff Management</h4>
 
-        </div>
-      
-      </NavLink> */}
 
 
         {/* <NavLink to='/dashboard' className='link' activeclassName = 'active'>
@@ -198,6 +189,17 @@ const Sidebar = ({
         </div>
       
       </NavLink> */}
+
+        <NavLink to='/apply-for-leave' className='link' activeclassName='active'>
+
+          <div>
+
+            <PiUsersThreeBold className='icon' />
+            <h4 style={{ display: isOpen ? "none" : "block" }}>Apply for  leave</h4>
+
+          </div>
+
+        </NavLink>
 
 
 

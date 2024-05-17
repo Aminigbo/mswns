@@ -10,12 +10,13 @@ import Chart from 'react-apexcharts';
 import { IoFilterOutline } from "react-icons/io5";
 import { Backdrop, Box, CircularProgress, Divider, Fade, Modal, colors } from '@mui/material';
 import { connect } from 'react-redux';
-import { AdminDeleteInvoice, deleteInvoice, fetchAllInvoicesAdmin, fetchAllInvoicesBySalesRep } from '../../service/supabase-service';
+import { AdminDeleteInvoice, AdminfetchStaffLeave, deleteInvoice, fetchAllInvoicesAdmin, fetchAllInvoicesBySalesRep } from '../../service/supabase-service';
 import { Invoice_Product, Saved_invoices, View_invoice } from '../../redux/state/action';
 import { Notify, NumberWithCommas, formatDate } from '../../utils';
 import { FaArrowAltCircleRight, FaPrint, FaTimes } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
 import AdminSidebar from '../../Components/admin-sidebar';
+import { mkConfig, generateCsv, download } from "export-to-csv";
 
 
 
@@ -26,16 +27,20 @@ const Dashboard = ({
   const InvoiceProducts = appState.AllInvoiceProducts
   const SavedInvoices = appState.SavedInvoices;
   const [open, setOpen] = React.useState(false);
+  const [open2, setOpen2] = React.useState(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => { setOpen(false); setOpen2(false) };
 
   // const SavedInvoices = []
 
   const [loading, setloading] = React.useState(true)
+  const [leaveLoader, setleaveLoader] = React.useState(true)
+  const [seeleaveLoader, setseeleaveLoader] = React.useState(true)
   const [amount_Array, setamount_Array] = React.useState([])
+  const [LeaveData, setLeaveData] = React.useState([])
   const navigate = useNavigate();
 
-  const amountSold = SavedInvoices && SavedInvoices.length > 0 ? SavedInvoices.filter(e => e.paid == true).reduce((acc, item) => acc + parseInt(item.amount), 0) : 0;
+  const amountSold = SavedInvoices && SavedInvoices.length > 0 ? SavedInvoices.filter(e => e.paid == true).filter(e => e.branch == "GRA").reduce((acc, item) => acc + parseInt(item.amount), 0) : 0;
 
 
   const style = {
@@ -74,6 +79,20 @@ const Dashboard = ({
       })
   }
 
+  function GetAllLeave() {
+    setleaveLoader(true)
+    AdminfetchStaffLeave(User.name)
+      .then(response => {
+        setleaveLoader(false)
+        console.log(response.data)
+        setLeaveData(response.data)
+      })
+      .catch(error => {
+        setleaveLoader(false)
+      })
+  }
+
+
 
   React.useEffect(() => {
     // Get current date and time
@@ -99,10 +118,11 @@ const Dashboard = ({
     const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}${timezoneSign}${String(timezoneOffsetHours).padStart(2, '0')}:${String(timezoneOffsetMinutes).padStart(2, '0')}`;
 
     FetchInvoices()
+    GetAllLeave()
 
     if (SavedInvoices.length > 0) {
       let amountArray = []
-      for (let i = 0; i < SavedInvoices.length; i++) {
+      for (let i = 0; i < SavedInvoices.filter(e => e.branch == "GRA").filter(e => e.paid == true).length; i++) {
         const element = SavedInvoices[i];
         amountArray.push(element.amount)
 
@@ -112,6 +132,8 @@ const Dashboard = ({
   }, [])
 
 
+  const csvConfig = mkConfig({ useKeysAsHeaders: true, filename: "GRA Sale" });
+
   return (
 
     <>
@@ -120,7 +142,7 @@ const Dashboard = ({
         <div>
           {/* {console.log(amount_Array)} */}
 
-          {loading && <div style={{
+          {/* {loading && <div style={{
             position: "fixed",
             height: "100%",
             width: "100%",
@@ -135,7 +157,7 @@ const Dashboard = ({
           }} >
             <CircularProgress />
             <spam style={{ color: "white" }} >Please wait.....</spam>
-          </div>}
+          </div>} */}
 
           <section className='main-dash'>
 
@@ -152,8 +174,8 @@ const Dashboard = ({
 
                   <div className="first-l-top">
                     <div>
-                      <h3>Today’s Sales</h3>
-                      <p>Sales Summary</p>
+                      <h3>Maisonwellness GRA Branch</h3>
+                      {/* <p>Sales Summary</p> */}
                     </div>
 
                     {/* <span className='export'>
@@ -161,6 +183,18 @@ const Dashboard = ({
                   export
 
                 </span> */}
+                    <span onClick={() => {
+                      navigate("/woji-dashboard")
+                    }} className='export' style={{
+                      width: "150px",
+                      cursor: "pointer",
+                      backgroundColor: "#000",
+                      color: "#fff"
+                    }}>
+                      {/* <PiExportBold className='e-i' /> */}
+                      See Woji branch
+
+                    </span>
 
                   </div>
 
@@ -182,7 +216,7 @@ const Dashboard = ({
                         <span style={{ backgroundColor: '#FF947A' }}>
                           <BiSolidReceipt className='c-i' />
                         </span>
-                        <h2>{SavedInvoices && SavedInvoices.length}</h2>
+                        <h2>{SavedInvoices && SavedInvoices.filter(e => e.branch == "GRA").length}</h2>
                         <h6>Total Order</h6>
                         {/* <p>+5% from yesterday</p> */}
                       </div>
@@ -193,7 +227,7 @@ const Dashboard = ({
                         <span style={{ backgroundColor: '#3CD856' }}>
                           <IoIosPricetags className='c-i' />
                         </span>
-                        <h2>{SavedInvoices && SavedInvoices.filter(e => e.paid == true).length}</h2>
+                        <h2>{SavedInvoices && SavedInvoices.filter(e => e.branch == "GRA").filter(e => e.paid == true).length}</h2>
                         <h6>Product Sold</h6>
                         {/* <p>+1.2% from yesterday</p> */}
 
@@ -206,7 +240,7 @@ const Dashboard = ({
                         <span style={{ backgroundColor: '#BF83FF' }}>
                           <FaUserPlus className='c-i' />
                         </span>
-                        <h2>{SavedInvoices && SavedInvoices.filter(e => e.customerphone.length > 5).length}</h2>
+                        <h2>{SavedInvoices && SavedInvoices.filter(e => e.branch == "GRA").filter(e => e.customerphone.length > 5).length}</h2>
                         <h6>Walk-in Customers</h6>
                         {/* <p>+0.5% from yesterday</p> */}
                       </div>
@@ -218,48 +252,46 @@ const Dashboard = ({
 
                 <div className="first-r">
                   <div>
-                    <h3>Concervion volume</h3>
-                    {/* <Chart 
-                  options={state.options}
-                  series={state.series}
-                  type="line"
-                  width="100%"
-                  height='300'
-                  
-                  
-                  
-                /> */}
+                    <h3>Leave requests</h3> <br />
 
-
-                    <Chart
-                      type='line'
-                      width='100%'
-                      height='270'
-                      series={[
-                        {
-                          names: 'one',
-                          data: amount_Array,
-                          // data: [800, 88, 150, 240, 80]
-                        },
-                        // {
-                        //   names: 'two',
-                        //   data: [1,2,3,4,5]
-                        // }
-                      ]}
-
-                      options={
-                        {
-                          colors: ['#FA5A7D', '#BF83FF'],
-                          xaxis: {
-                            categories: [1, 2, 3, 4, 5]
-                          },
-
-                        }
-
-
-                      }
-                    />
-
+                    {LeaveData.length > 0 && LeaveData.slice(0, 5).map((item, index) => {
+                      return <div
+                        onClick={() => {
+                          setseeleaveLoader(item)
+                          setOpen2(true)
+                        }}
+                        style={{
+                          padding: 4,
+                          fontSize: 9,
+                          backgroundColor: "lightgrey",
+                          width: "90%",
+                          borderRadius: 7,
+                          cursor: "pointer",
+                          marginBottom: 14
+                        }} >
+                        <b >{item.staff}</b> <br />
+                        <b >{item.date}</b>
+                        <p>{item.purpose}</p>
+                      </div>
+                    })}
+                    {leaveLoader == true &&
+                      <div style={{
+                        // position: "fixed",
+                        height: "300px",
+                        width: "100%",
+                        left: 0,
+                        top: 0,
+                        // backgroundColor: "rgb(0,0,0,0.8)",
+                        zIndex: 100,
+                        justifyContent: "center",
+                        display: "flex",
+                        alignItems: "center",
+                        flexDirection: "column"
+                      }} >
+                        <CircularProgress size={20} />
+                        <spam style={{ color: "white" }} >Please wait.....</spam>
+                      </div>
+                    }
 
                   </div>
 
@@ -287,7 +319,35 @@ const Dashboard = ({
                   filter
                 </span> */}
 
-                    {/* <span className="fil">Download All</span> */}
+                    <span
+                      onClick={() => {
+                        let mockData = [];
+                        for (let i = 0; i < SavedInvoices.filter(e => e.branch == "GRA").length; i++) {
+                          let element = {
+                            amount: NumberWithCommas(SavedInvoices[i].amount),
+                            vat: NumberWithCommas(SavedInvoices[i].vat),
+                            id: SavedInvoices[i].invoiceID,
+                            salse_rep: SavedInvoices[i].salesRep,
+                            date: formatDate(SavedInvoices[i].created_at),
+                            paid: SavedInvoices[i].paid ? "YES" : "NO",
+                            amount_paid: SavedInvoices[i].paid ? SavedInvoices[i].payData.amountToPay : "---",
+                          };
+                          mockData.push(element)
+                          // console.log(element)
+                        }
+                        // Converts your Array < Object > to a CsvOutput string based on the configs
+                        const csv = generateCsv(csvConfig)(mockData);
+                        download(csvConfig)(csv)
+                      }}
+                      style={{
+                        width: "150px",
+                        cursor: "pointer",
+                        backgroundColor: "#000",
+                        color: "#fff"
+                      }}
+                      className="fil">Download CSV</span>
+
+
 
                   </div>
 
@@ -310,10 +370,10 @@ const Dashboard = ({
                     <th>Action</th>
                   </tr>
 
-                  {SavedInvoices && SavedInvoices.map((item, index) => {
+                  {SavedInvoices && SavedInvoices.length > 0 && SavedInvoices.filter(e => e.branch == "GRA").map((item, index) => {
                     return <tr className='t-row'>
 
-                      <td>{item.invoiceID}</td>
+                      <td style={{ paddingLeft: 10 }} >{item.invoiceID}</td>
                       <td>₦{NumberWithCommas(item.amount)}</td>
                       <td>{item.product.length}</td>
                       <td>{item.marketerid ? "Referred" : "Walk-in"}</td>
@@ -350,6 +410,121 @@ const Dashboard = ({
 
           </section>
 
+
+          <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            open={open2}
+            // open={true}
+            onClose={handleClose}
+            closeAfterTransition
+            slots={{ backdrop: Backdrop }}
+            slotProps={{
+              backdrop: {
+                timeout: 500,
+              },
+            }}
+          >
+            <Fade in={open2}>
+              <Box sx={style}>
+
+                <div style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  // backgroundColor: "darkred",
+                  width: "100%",
+                  // height: 70,
+                  padding: 10
+                }}>
+
+                  <div>
+                    <h1 style={{
+                      // fontSize: 12,
+                      // fontWeight: 500
+                    }} >{seeleaveLoader.staff}</h1>
+
+                    <br />  
+
+                    <b style={{
+                      fontSize: 12,
+                      fontWeight: 500,
+                    }} >Purpose</b>
+
+                    <p style={{
+                    }} >{seeleaveLoader.purpose}</p>
+                    <br />  
+
+                    <b style={{
+                      fontSize: 12,
+                      fontWeight: 500
+                    }} >Date</b>
+
+                    <p style={{
+                    }} >{seeleaveLoader.date}</p>
+
+                    <br />   
+
+                    <b style={{
+                      fontSize: 12,
+                      fontWeight: 500
+                    }} >Number of days</b>
+
+                    <p style={{
+                    }} >{seeleaveLoader.days} days</p>
+
+
+
+                    <br />
+
+                    <b style={{
+                      fontSize: 12,
+                      fontWeight: 500
+                    }} >Description</b>
+
+                    <p style={{
+                    }} >{seeleaveLoader.desc}</p>
+
+                    <div style={{
+                      marginTop: 50,
+                      marginBottom: 50
+                    }}>
+                      <span
+                        onClick={() => {
+                          // Apply()
+                        }}
+                        style={{
+                          padding: "10px 50px",
+                          cursor: "pointer",
+                          backgroundColor: "mediumseagreen",
+                          color: "#fff",
+                          borderRadius: "8px"
+                        }}
+                        className="fil">Approve</span>
+
+                      <span
+                        onClick={() => {
+                          // Apply()
+                        }}
+                        style={{
+                          padding: "10px 50px",
+                          cursor: "pointer",
+                          backgroundColor: "crimson",
+                          color: "#fff",
+                          borderRadius: "8px",
+                          marginLeft: 20
+                        }}
+                        className="fil">Decline</span>
+
+                    </div>
+                  </div>
+
+
+                </div>
+              </Box>
+            </Fade>
+          </Modal>
 
 
           <Modal
@@ -741,10 +916,10 @@ const Dashboard = ({
         </div>
       </> : <></>}
       <div style={{
-        display:"flex",
-        justifyContent:"center",
-        alignItems:"center",
-        height:600
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: 600
       }} >
         <CircularProgress />
         <spam style={{ color: "white" }} >Please wait.....</spam>

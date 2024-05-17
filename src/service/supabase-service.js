@@ -16,6 +16,40 @@ export function fetchAllProducts() {
         .eq("inStock", true)
 }
 
+
+export function ApplyForLeave({
+    purpose, date, desc, staff, days
+}) {
+    return Supabase
+        .from("staff_leave")
+        .insert([{
+            staff,
+            purpose,
+            approved: false,
+            desc,
+            date,
+            days
+        }])
+        .select()
+}
+
+
+export function fetchStaffLeave(staff) {
+    return Supabase
+        .from("staff_leave")
+        .select("*")
+        .eq("staff", staff)
+}
+
+
+export function AdminfetchStaffLeave() {
+    return Supabase
+        .from("staff_leave")
+        .select("*")
+        .order('id', { ascending: false })
+}
+
+
 export function SaveInvoiceModel({
     product, salesRep, amount, vat, invoiceID, generated_by, branch, type
 }) {
@@ -70,6 +104,39 @@ export function fetchAllInvoicesByBranch(branch) {
         .eq('branch', branch)
         .eq('deleted', false)
 }
+
+
+// fetch attendance
+export function FetchAttendance(user) {
+    return Supabase
+        .from("attendance")
+        .select("*")
+        .eq('user', user)
+        .order('id', { ascending: false })
+    // .order("ascending", true)
+}
+
+// sign attendace
+export function SignAttendance({
+    date,
+    month,
+    year,
+    time,
+    user
+}) {
+    return Supabase
+        .from('attendance')
+        .insert([{
+            date,
+            month,
+            year,
+            time,
+            user
+        }])
+        .select()
+    // .select()
+}
+
 
 
 export function fetchSingleInvoices(id) {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { MdOutlineDashboard } from "react-icons/md";
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigation } from 'react-router-dom';
 import { FaBars } from "react-icons/fa";
 import { IoCloseSharp } from "react-icons/io5";
 import { IoIosSettings } from "react-icons/io";
@@ -18,7 +18,7 @@ import { TiArrowSortedDown } from "react-icons/ti";
 
 
 const AdminSidebar = () => {
-
+  // const navigate = useNavigation()
   const [isDropdownOpen, setDropdownOpen] = useState(false);
 
   const [sale, setSales] = useState(false);
@@ -47,7 +47,7 @@ const AdminSidebar = () => {
       position: "fixed",
       overflow: "auto",
       height: "100%",
-      zIndex:100,
+      zIndex: 100,
       // paddingBottom:90
       // backgroundColor:"red"
     }} >
@@ -88,13 +88,22 @@ const AdminSidebar = () => {
         </NavLink>
 
 
+        {/* <NavLink to='#' className='' activeclassName='' onClick={salesOpen}> */}
         <NavLink to='/admin-salse-management' className='link' activeclassName='active' onClick={salesOpen}>
 
           <div>
 
             <SiNginxproxymanager className='icon' />
             <h4 style={{ display: isOpen ? "none" : "block" }}>Sales Management </h4>
-
+            {console.log(sale)}
+            {/* {
+              sale ? (
+                <section>
+                  <p   style={{ color: "" }}>Woji branch</p>
+                  <p style={{ color: "" }}>GRA Branch</p>
+                </section>
+              ) : null
+            } */}
 
           </div>
 
@@ -111,6 +120,18 @@ const AdminSidebar = () => {
           </div>
 
         </NavLink>
+
+        <NavLink to='/admin-all-marketers' className='link' activeclassName='active'>
+
+          <div>
+
+            <PiUsersThreeBold className='icon' />
+            <h4 style={{ display: isOpen ? "none" : "block" }}>Marketers</h4>
+
+          </div>
+
+        </NavLink>
+
 
 
         <NavLink to='/admin-product-management' className='link' activeclassName='active'>
@@ -186,7 +207,7 @@ const AdminSidebar = () => {
           </div>
 
         </NavLink>
- 
+
 
 
 
