@@ -34,7 +34,7 @@ import q2 from '../../images/q2.png'
 
 
 
-const Salesmgt = ({
+const Wojisalesmgt = ({
     appState, disp_savedInvoice, disp_invoice_products, disp_view_invoice
 }) => {
     const User = appState.User;
@@ -177,39 +177,95 @@ const Salesmgt = ({
                     <DashHeader User={User} />
 
 
+                    {/* <div className="product">
+                        <div className="top">
+                            <h3>Today's sales</h3>
+
+                            <div>
+
+                            </div>
+
+                        </div>
+                         {console.log(SavedInvoices)} 
+
+                        <table>
+                            <tr>
+                                <th>ID</th>
+                                <th>Amount</th>
+                                <th>Item(s)</th>
+                                <th>Customer type</th>
+                                <th>Date</th>
+                                <th>Sales rep</th>
+                                <th>Branch</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+
+                            {SavedInvoices && SavedInvoices.map((item, index) => {
+                                return <tr className='t-row'>
+
+                                    <td>{item.invoiceID}</td>
+                                    <td>₦{NumberWithCommas(item.amount)}</td>
+                                    <td>{item.product.length}</td>
+                                    <td>{item.marketerid ? "Referred" : "Walk-in"}</td>
+                                    <td>{formatDate(item.created_at)}</td>
+                                    <td><b>{item.generated_by}</b></td>
+                                    <td><b>{item.branch}</b></td>
+                                    <td className='av' style={{ color: item.paid == true ? "green" : "crimson" }} >{item.paid == true ? "PAID" : "NOT PAID"}</td>
+                                    <td
+                                        onClick={() => {
+                                            handleOpen()
+                                            disp_invoice_products(item)
+                                            console.log(item)
+                                            // disp_view_invoice(true)
+                                            // navigate("/invoice")
+                                        }}
+                                        style={{
+                                            cursor: "pointer",
+                                            color: "#252C58",
+                                            fontWeight: 700,
+                                            textAlign: "center"
+                                        }} >View <FaArrowAltCircleRight /> </td>
+
+                                </tr>
+                            })}
+
+
+                        </table>
+
+
+                    </div> */}
+
 
                     <div className="sales-summary">
 
                         <div className="sales-o">
 
                             <div className="sales1">
-
                                 <div style={{
                                     display: "flex",
                                     flexDirection: "row",
                                     justifyContent: "space-between",
                                     marginTop: 30
 
-                                }} > 
-                                    <h2>GRA Branch</h2>
+                                }} >
+                                    <h2>Woji Branch</h2>
 
                                     <span onClick={() => {
-                                        navigate("/woji-salse-management")
+                                        navigate("/admin-salse-management")
                                     }} className='export' style={{
                                         padding: "10px 15px",
                                         cursor: "pointer",
                                         backgroundColor: "#000",
                                         color: "#fff",
-                                        borderRadius:6
+                                        borderRadius: 6
                                     }}>
                                         {/* <PiExportBold className='e-i' /> */}
-                                        See Woji branch
+                                        See GRA branch
 
                                     </span>
 
                                 </div>
-
-
 
                                 <div style={{
                                     display: "flex",
@@ -230,22 +286,22 @@ const Salesmgt = ({
                                 <div className='s-c'>
 
                                     <div className='s1'>
-                                        <Card1 img={img1} price={`₦ ${NumberWithCommas(TodaysTotalProductAmountGRA)}`} info='Today' />
+                                        <Card1 img={img1} price={`₦ ${NumberWithCommas(TodaysTotalProductAmount)}`} info='Today' />
 
                                     </div>
 
                                     <div className='s1'>
-                                        <Card1 img={img2} price={`₦${NumberWithCommas(TotalProductAmountGRA)}`} info='Total' />
+                                        <Card1 img={img2} price={`₦${NumberWithCommas(TotalProductAmount)}`} info='Total' />
 
                                     </div>
 
                                     <div className='s1'>
-                                        <Card1 img={img3} price={`₦${NumberWithCommas(TodaysTotalServiceAmountGRA)}`} info='Today' />
+                                        <Card1 img={img3} price={`₦${NumberWithCommas(TodaysTotalServiceAmount)}`} info='Today' />
 
                                     </div>
 
                                     <div className='s1'>
-                                        <Card1 img={img4} price={`₦${NumberWithCommas(TotalServiceAmountGRA)}`} info='Total' />
+                                        <Card1 img={img4} price={`₦${NumberWithCommas(TotalServiceAmount)}`} info='Total' />
 
                                     </div>
 
@@ -253,6 +309,7 @@ const Salesmgt = ({
                             </div>
 
                         </div>
+
 
 
                         <div className="inventory">
@@ -261,10 +318,10 @@ const Salesmgt = ({
 
                                 <div className="i-c">
                                     <div className="i-c1">
-                                        <Card2 img={i1} numb={`₦${NumberWithCommas(TotalProductAmountGRA)}`} info='Products' />
+                                        <Card2 img={i1} numb={`₦${NumberWithCommas(TotalProductAmount)}`} info='Products' />
                                     </div>
                                     <div className="i-c1">
-                                        <Card2 img={i2} numb={`₦${NumberWithCommas(TotalServiceAmountGRA)}`} info='Services' />
+                                        <Card2 img={i2} numb={`₦${NumberWithCommas(TotalServiceAmount)}`} info='Services' />
                                     </div>
                                 </div>
                             </div>
@@ -273,7 +330,6 @@ const Salesmgt = ({
                         </div>
 
                     </div>
-
 
 
                     <div className="sales-summary">
@@ -788,4 +844,4 @@ const mapDispatchToProps = (dispatch, encoded) => {
 };
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(Salesmgt);
+export default connect(mapStateToProps, mapDispatchToProps)(Wojisalesmgt);

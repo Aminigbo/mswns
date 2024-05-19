@@ -10,7 +10,7 @@ import Chart from 'react-apexcharts';
 import { IoFilterOutline } from "react-icons/io5";
 import { Backdrop, Box, CircularProgress, Divider, Fade, Modal, colors } from '@mui/material';
 import { connect } from 'react-redux';
-import { AdminDeleteInvoice, AdminfetchStaffLeave, deleteInvoice, fetchAllInvoicesAdmin, fetchAllInvoicesBySalesRep } from '../../service/supabase-service';
+import { AdminDeleteInvoice, AdminfetchStaffLeave, deleteInvoice, fetchAllInvoicesAdmin, fetchAllInvoicesBySalesRep, updateLeaveStatus } from '../../service/supabase-service';
 import { Invoice_Product, Saved_invoices, View_invoice } from '../../redux/state/action';
 import { Notify, NumberWithCommas, formatDate } from '../../utils';
 import { FaArrowAltCircleRight, FaPrint, FaTimes } from 'react-icons/fa';
@@ -81,7 +81,7 @@ const Dashboard = ({
 
   function GetAllLeave() {
     setleaveLoader(true)
-    AdminfetchStaffLeave(User.name)
+    AdminfetchStaffLeave()
       .then(response => {
         setleaveLoader(false)
         console.log(response.data)
@@ -130,34 +130,27 @@ const Dashboard = ({
       setamount_Array(amountArray)
     }
   }, [])
-
-
   const csvConfig = mkConfig({ useKeysAsHeaders: true, filename: "GRA Sale" });
 
+  function ApproveLeave(status) {
+    // console.log(status)
+    setleaveLoader(true)
+    handleClose()
+    updateLeaveStatus(status, seeleaveLoader.id)
+      .then(response => {
+        GetAllLeave()
+      })
+      .catch(error => {
+        setleaveLoader(false)
+        handleClose()
+      })
+  }
   return (
 
     <>
 
       {!loading ? <>
         <div>
-          {/* {console.log(amount_Array)} */}
-
-          {/* {loading && <div style={{
-            position: "fixed",
-            height: "100%",
-            width: "100%",
-            left: 0,
-            top: 0,
-            backgroundColor: "rgb(0,0,0,0.8)",
-            zIndex: 100,
-            justifyContent: "center",
-            display: "flex",
-            alignItems: "center",
-            flexDirection: "column"
-          }} >
-            <CircularProgress />
-            <spam style={{ color: "white" }} >Please wait.....</spam>
-          </div>} */}
 
           <section className='main-dash'>
 
@@ -254,7 +247,7 @@ const Dashboard = ({
                   <div>
                     <h3>Leave requests</h3> <br />
 
-                    {LeaveData.length > 0 && LeaveData.slice(0, 5).map((item, index) => {
+                    {LeaveData.length > 0 ? LeaveData.slice(0, 5).map((item, index) => {
                       return <div
                         onClick={() => {
                           setseeleaveLoader(item)
@@ -273,7 +266,22 @@ const Dashboard = ({
                         <b >{item.date}</b>
                         <p>{item.purpose}</p>
                       </div>
-                    })}
+                    }) :
+                      <div style={{
+                        // position: "fixed",
+                        height: "300px",
+                        width: "100%",
+                        left: 0,
+                        top: 0,
+                        // backgroundColor: "rgb(0,0,0,0.8)",
+                        zIndex: 100,
+                        justifyContent: "center",
+                        display: "flex",
+                        alignItems: "center",
+                        flexDirection: "column"
+                      }} >
+                        <spam style={{ color: "#000" }} >No active request</spam>
+                      </div>}
                     {leaveLoader == true &&
                       <div style={{
                         // position: "fixed",
@@ -445,7 +453,7 @@ const Dashboard = ({
                       // fontWeight: 500
                     }} >{seeleaveLoader.staff}</h1>
 
-                    <br />  
+                    <br />
 
                     <b style={{
                       fontSize: 12,
@@ -454,7 +462,7 @@ const Dashboard = ({
 
                     <p style={{
                     }} >{seeleaveLoader.purpose}</p>
-                    <br />  
+                    <br />
 
                     <b style={{
                       fontSize: 12,
@@ -464,7 +472,7 @@ const Dashboard = ({
                     <p style={{
                     }} >{seeleaveLoader.date}</p>
 
-                    <br />   
+                    <br />
 
                     <b style={{
                       fontSize: 12,
@@ -492,7 +500,7 @@ const Dashboard = ({
                     }}>
                       <span
                         onClick={() => {
-                          // Apply()
+                          ApproveLeave(true)
                         }}
                         style={{
                           padding: "10px 50px",
@@ -505,7 +513,7 @@ const Dashboard = ({
 
                       <span
                         onClick={() => {
-                          // Apply()
+                          ApproveLeave(false)
                         }}
                         style={{
                           padding: "10px 50px",
@@ -914,8 +922,7 @@ const Dashboard = ({
 
 
         </div>
-      </> : <></>}
-      <div style={{
+      </> : <><div style={{
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -924,7 +931,8 @@ const Dashboard = ({
         <CircularProgress />
         <spam style={{ color: "white" }} >Please wait.....</spam>
 
-      </div>
+      </div></>}
+
     </>
 
   )

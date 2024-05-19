@@ -47,7 +47,10 @@ const Login = ({
                         })
                         if (response.data.user.user_metadata.type == "Admin") {
                             navigate("/admin-dashboard")
-                        }else{
+                        } else if (response.data.user.user_metadata.type == "Marketer") {
+                            navigate("/Marketer-dashboard")
+                        }
+                        else {
                             navigate("/dashboard")
                         }
                         // console.log(response.data.user.user_metadata)

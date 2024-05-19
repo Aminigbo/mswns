@@ -20,6 +20,9 @@ import InvoiceMgt from './Screen/admin/invoice-mgt';
 import WojiDashboard from './Screen/admin/woji-dashboard';
 import MarketersMgt from './Screen/admin/marketers-mgt';
 import Leave from './Screen/leave';
+import WojiSalsesMgt from './Screen/admin/woji-salses-mgt';
+import WojiInvoiceMgt from './Screen/admin/woji-invoice-mgt';
+import MarketerDashboard from './Screen/marketer-dashboard';
 
 function App() {
   return (
@@ -32,6 +35,7 @@ function App() {
             <Route path='/create' element={<Create />} />
             {/* <Route path='/dashboard' element={<Sales />} /> */}
             <Route path='/dashboard' element={<Dashboard />} />
+            <Route path='/Marketer-dashboard' element={<MarketerDashboard />} />
             <Route path='/sales' element={<Sales />} />
             <Route path='/apply-for-leave' element={<Leave />} />
             <Route path='/product-sales' element={<ProductSales />} />
@@ -43,11 +47,13 @@ function App() {
             <Route path='/admin-dashboard' element={<Dashboardadmin />} />
             <Route path='/woji-dashboard' element={<WojiDashboard />} />
             <Route path='/admin-salse-management' element={<SalesMgt />} />
+            <Route path='/woji-salse-management' element={<WojiSalsesMgt />} />
             <Route path='/admin-staff-management' element={<StaffMgt />} />
             <Route path='/admin-all-marketers' element={<MarketersMgt />} />
             <Route path='/admin-product-management' element={<ProductMgt />} />
             <Route path='/payroll' element={<Payroll />} />
             <Route path='/invoice-mgt' element={<InvoiceMgt />} />
+            <Route path='/woji-invoice-mgt' element={<WojiInvoiceMgt />} />
 
 
           </Routes>

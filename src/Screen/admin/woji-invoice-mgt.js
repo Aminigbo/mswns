@@ -45,7 +45,7 @@ import { BsCalculator, BsSendCheck } from 'react-icons/bs'
 
 
 
-const Staffmgt = ({
+const WojiInvoiceMgt = ({
     appState, disp_savedInvoice, disp_invoice_products, disp_view_invoice
 }) => {
 
@@ -1024,10 +1024,10 @@ const Staffmgt = ({
                                     marginBottom: 50
 
                                 }} >
-                                    <h2>GRA Branch Overall Inventory</h2>
+                                    <h2>Woji Branch Overall Inventory</h2>
 
                                     <span onClick={() => {
-                                        navigate("/woji-invoice-mgt")
+                                        navigate("/invoice-mgt")
                                     }} className='export' style={{
                                         padding: "10px 15px",
                                         cursor: "pointer",
@@ -1036,7 +1036,7 @@ const Staffmgt = ({
                                         borderRadius: 6
                                     }}>
                                         {/* <PiExportBold className='e-i' /> */}
-                                        See Woji branch
+                                        See GRA branch
 
                                     </span>
 
@@ -1051,7 +1051,7 @@ const Staffmgt = ({
                                         {/* <p>Last 7 days</p> */}
                                     </div>
 
-                                    {/* <div className="prod1 prod2">
+                                    <div className="prod1 prod2">
                                         <div className="p2-c">
 
                                             <h3 style={{ color: "#E19133" }}>Woji Branch</h3>
@@ -1067,26 +1067,9 @@ const Staffmgt = ({
 
                                         </div>
 
-                                    </div> */}
-
-                                    <div className="prod1 prod2">
-
-                                        <div className="p2-c">
-
-                                            {/* <h3 style={{ color: '#845EBC' }}>GRA Branch</h3> */}
-                                            <div className='p-f1'>
-                                                <h6>{SavedInvoices && SavedInvoices.filter(e => e.branch == "GRA").filter(e => e.paid == true).length}</h6>
-                                                <h6>{SavedInvoices && SavedInvoices.filter(e => e.branch == "GRA").filter(e => e.paid == false).length}</h6>
-                                            </div>
-
-                                            <div className='p-f1'>
-                                                <p>Paid</p>
-                                                <p>Not paid</p>
-                                            </div>
-
-                                        </div>
-
                                     </div>
+
+                                    
 
                                 </div>
 
@@ -1127,7 +1110,7 @@ const Staffmgt = ({
 
 
                                     {
-                                        SavedInvoices.filter(e => e.branch == "GRA").map((items, id) => {
+                                        SavedInvoices.filter(e => e.branch == "WOJI").map((items, id) => {
                                             return (
                                                 <tr key={id}>
                                                     <td >{NumberWithCommas(items.amount)}</td>
@@ -1231,4 +1214,4 @@ const mapDispatchToProps = (dispatch, encoded) => {
 };
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(Staffmgt);
+export default connect(mapStateToProps, mapDispatchToProps)(WojiInvoiceMgt);

@@ -9,6 +9,20 @@ export const LoginModel = ({ email, password }) => {
     })
 }
 
+
+
+export function updateLeaveStatus(status, id) {
+    return Supabase
+        .from('staff_leave')
+        .update({
+            approved: status
+        })
+        .eq('id', id)
+    // .select()
+}
+
+
+
 export function fetchAllProducts() {
     return Supabase
         .from("products")
@@ -46,6 +60,7 @@ export function AdminfetchStaffLeave() {
     return Supabase
         .from("staff_leave")
         .select("*")
+        .eq("approved", false)
         .order('id', { ascending: false })
 }
 
@@ -102,6 +117,15 @@ export function fetchAllInvoicesByBranch(branch) {
         .from("invoices")
         .select("*")
         .eq('branch', branch)
+        .eq('deleted', false)
+}
+
+// Marketers
+export function FetchMarkersInvoice(marketer) {
+    return Supabase
+        .from("invoices")
+        .select("*")
+        .eq('marketerid', marketer)
         .eq('deleted', false)
 }
 
